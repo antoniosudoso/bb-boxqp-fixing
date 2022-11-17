@@ -1,6 +1,6 @@
 ## Fix and Bound: An efficient approach for solving large-scale quadratic programming problems with box constraints
 
-This repository contains the source code of the B&B algorithm described in the paper ["Fix and Bound: An efficient approach for solving large-scale quadratic programming problems with box constraints"]() for solving nonconvex BoxQPs to global optimality:
+This repository contains the source code of the B&B algorithm described in the paper ["Fix and Bound: An efficient approach for solving large-scale quadratic programming problems with box constraints"](https://arxiv.org/abs/2211.08911) for solving nonconvex BoxQPs to global optimality:
 
 $$ 
 \begin{align*}
