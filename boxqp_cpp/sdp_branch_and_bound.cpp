@@ -255,10 +255,7 @@ std::vector<JobData *> create_children_jobs(double node_gap, arma::vec &x_sdp, S
 }
 
 
-std::vector<JobData *> build_child_problem(int type, NodeData *node_data, InputData *input_data, SharedData  *shared_data, Config *config) {
-
-    auto *matlab_struct = new MatlabStruct();
-    matlab_struct->matlabPtr = start_matlab(config);
+std::vector<JobData *> build_child_problem(MatlabStruct *matlab, int type, NodeData *node_data, InputData *input_data, SharedData  *shared_data, Config *config) {
 
     auto child_node = new SDPNode();
 	auto parent = node_data->node;
@@ -283,7 +280,7 @@ std::vector<JobData *> build_child_problem(int type, NodeData *node_data, InputD
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    SDPResult  sdp_result = solve_sdp(matlab_struct->matlabPtr, matlab_struct->factory,
+    SDPResult  sdp_result = solve_sdp(matlab->matlabPtr, matlab->factory,
               parent->B_vector, parent->l_vector,shared_data->global_ub,
               shared_data->global_x, child_node->x_fix, child_node->x_in, input_data, config);
 
@@ -340,20 +337,18 @@ std::vector<JobData *> build_child_problem(int type, NodeData *node_data, InputD
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
         auto time = (double) duration.count();
 
-        print_log_sdp(log_file, n, n_bin, parent->id, child_node->id,
+        print_log_sdp(log_string, n, n_bin, parent->id, child_node->id,
                       parent->lb, child_node->lb, time, cp_iter, cp_flag, n_ineq, n_sdp_fixing, time_sdp_fixing, n_fixed,
                       child_node->ub,shared_data->global_ub, node_data->i,
                       node_gap,shared_data->gap, open, ub_updated);
 
     }
 
-    delete(matlab_struct);
-
     return create_children_jobs(node_gap, x_sdp, child_node, branching_index, branching_type, node_data, shared_data, config);
 }
 
 
-std::vector<JobData *> build_root_problem(MatlabStruct *matlab_struct, InputData *input_data, SharedData *shared_data, Config *config) {
+std::vector<JobData *> build_root_problem(MatlabStruct *matlab, InputData *input_data, SharedData *shared_data, Config *config) {
 
     // init root
     SDPNode *root;
@@ -362,7 +357,7 @@ std::vector<JobData *> build_root_problem(MatlabStruct *matlab_struct, InputData
 
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    SDPResult sdp_result = solve_sdp(matlab_struct->matlabPtr, matlab_struct->factory, input_data, config);
+    SDPResult sdp_result = solve_sdp(matlab->matlabPtr, matlab->factory, input_data, config);
 
     int n = sdp_result.n;
     int n_bin = sdp_result.n_bin;
@@ -397,7 +392,7 @@ std::vector<JobData *> build_root_problem(MatlabStruct *matlab_struct, InputData
     auto duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
     auto time = (double) duration.count();
 
-    print_log_sdp(log_file, n, n_bin, -1, root->id, -std::numeric_limits<double>::infinity(),
+    print_log_sdp(log_string, n, n_bin, -1, root->id, -std::numeric_limits<double>::infinity(),
                   root->lb, time, cp_iter, cp_flag, n_ineq, n_sdp_fixing, time_sdp_fixing, n_fixed,
                   root->ub, shared_data->global_ub, -1, node_gap, node_gap, open, true);
 
@@ -416,21 +411,21 @@ bool is_thread_pool_working(std::vector<bool> &thread_state) {
     return true;
 }
 
-void save_x_to_file(Config *config, arma::vec &x){
-
-    std::ofstream f;
-    f.open(config->result_path);
-    for (size_t i = 0; i < x.size(); i++){
-        double val = x(i);
-        f << val << "\n";
-    }
-    f.close();
-}
-
 
 arma::vec sdp_branch_and_bound(Config *config, InputData *input_data) {
 
     int n_thread = config->branch_and_bound_parallel;
+
+    auto **matlab = new MatlabStruct *[n_thread];
+    for (int i = 0; i < n_thread; i++) {
+        auto *matlab_struct = new MatlabStruct();
+        std::cout << "Starting MATLAB session..." << "\n";
+        matlab_struct->matlabPtr = start_matlab(config);
+        std::cout << "MATLAB started!" << "\n";
+        matlab[i] = matlab_struct;
+    }
+
+    std::cout << "\n";
 
     JobAbstractQueue *queue;
     switch (config->branch_and_bound_visiting_strategy) {
@@ -457,19 +452,14 @@ arma::vec sdp_branch_and_bound(Config *config, InputData *input_data) {
         shared_data->threadStates.push_back(false);
     }
 
-    ThreadPool pool(config, shared_data, input_data, n_thread);
+    ThreadPool pool(matlab, config, shared_data, input_data, n_thread);
     
-    print_header_sdp(log_file);
+    print_header_sdp(log_string);
 
     auto start_all = std::chrono::high_resolution_clock::now();
-    
-    auto *matlab_struct = new MatlabStruct();
-    matlab_struct->matlabPtr = start_matlab(config);
 
-    std::vector<JobData *> jobs = build_root_problem(matlab_struct, input_data, shared_data, config);
+    std::vector<JobData *> jobs = build_root_problem(matlab[0], input_data, shared_data, config);
 
-    delete (matlab_struct);
-    
     double root_gap = shared_data->gap;
 
     // submit jobs to the thread pool
@@ -500,6 +490,8 @@ arma::vec sdp_branch_and_bound(Config *config, InputData *input_data) {
         shared_data->gap = 0.0;
     }
 
+    log_file << log_string.rdbuf();
+
     log_file << "\n";
     log_file << "TIME: " << duration_all.count() << " sec\n";
     log_file << "NODES: " << shared_data->n_nodes << "\n";
@@ -515,6 +507,11 @@ arma::vec sdp_branch_and_bound(Config *config, InputData *input_data) {
     delete (input_data);
     delete (queue);
     delete (shared_data);
+
+    for (int i = 0; i < n_thread; i++) {
+        delete (matlab[i]);
+    }
+    delete[] (matlab);
 
     return result;
 

@@ -17,12 +17,19 @@ std::u16string env_command(const char *key, const char *value) {
 
 // start new matlab session
 std::unique_ptr<matlab::engine::MATLABEngine> start_matlab(Config *config) {
+
+    //std::string engine_string = "\"matlab.engine.shareEngine('" + session + "')\"";
+    //std::u16string share_engine(engine_string.begin(), engine_string.end());
+
     // Start MATLAB with -r option
     std::unique_ptr<matlab::engine::MATLABEngine> matlabPtr;
     //std::cout << "Starting Matlab..." << "\n";
     std::vector<std::u16string> optionVec;
     optionVec.emplace_back(u"-nojvm");
     matlabPtr = matlab::engine::startMATLAB(optionVec);
+
+    //matlabPtr->eval(u"matlab.engine.shareEngine('session0')");
+    //matlabPtr->eval(u"matlab.engine.engineName");
 
     // Set MATLAB source path
     matlabPtr->eval(generate_path_command(config->matlab_source_folder));
@@ -36,7 +43,23 @@ std::unique_ptr<matlab::engine::MATLABEngine> start_matlab(Config *config) {
     // Set GUROBI path
     matlabPtr->eval(generate_path_command(config->gurobi_folder));
 
+    //std::cout << "dopo eval" << "\n";
+
     return matlabPtr;
+}
+
+
+std::unique_ptr<matlab::engine::MATLABEngine> connect_to_matlab(std::string &session_name) {
+
+    std::unique_ptr<matlab::engine::MATLABEngine> matlabPtr;
+    std::cout << "Connecting to " << session_name << "\n";
+    // Connect MATLAB engine synchronously
+    //std::u16string session(session_name.begin(), session_name.end());
+    matlabPtr = matlab::engine::connectMATLAB(u"session0");
+    // Set path
+    std::cout << "Connected!" << "\n";
+    return matlabPtr;
+
 }
 
 

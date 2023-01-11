@@ -8,6 +8,7 @@
 #include <armadillo>
 
 std::unique_ptr<matlab::engine::MATLABEngine> start_matlab(Config *config);
+std::unique_ptr<matlab::engine::MATLABEngine> connect_to_matlab(std::string &session_name);
 matlab::data::TypedArray<double> vector_pair_to_matlab_matrix(matlab::data::ArrayFactory &factory, std::vector<std::pair<int, int>> &pairs);
 matlab::data::TypedArray<double> arma_to_matlab_vector(matlab::data::ArrayFactory &factory, arma::vec &v);
 matlab::data::TypedArray<double> arma_to_matlab_matrix(matlab::data::ArrayFactory &factory, arma::mat &X);

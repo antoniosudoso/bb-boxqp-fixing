@@ -13,6 +13,7 @@
 #define TERNARY 3
 
 extern std::ofstream log_file;
+extern std::stringstream log_string;
 
 typedef struct Config {
 

@@ -6,6 +6,7 @@
 #include "config_params.h"
 
 std::ofstream log_file;
+std::stringstream log_string;
 
 std::map<std::string, std::string> read_params(std::string &config_file) {
 
@@ -137,7 +138,10 @@ void run(int argc, char **argv) {
     log_file << "SNOPT_LICENSE: " << config->snopt_license << "\n";
     log_file << "SDPNAL_FOLDER: " << config->sdpnal_folder << "\n";
 
+    log_file.flush();
     sdp_branch_and_bound(config, input_data);
+    log_file.close();
+
     delete (config);
 
 }

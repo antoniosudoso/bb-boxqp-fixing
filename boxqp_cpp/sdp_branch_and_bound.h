@@ -48,6 +48,6 @@ typedef struct InputData {
 
 
 arma::vec sdp_branch_and_bound(Config *config, InputData *input_data);
-std::vector<JobData *> build_root_problem(MatlabStruct *matlab_struct, InputData *input_data, SharedData *shared_data, Config *config);
-std::vector<JobData *> build_child_problem(int type, NodeData *job_data, InputData *input_data, SharedData *shared_data, Config *config);
+std::vector<JobData *> build_root_problem(MatlabStruct *matlab, InputData *input_data, SharedData *shared_data, Config *config);
+std::vector<JobData *> build_child_problem(MatlabStruct *matlab, int type, NodeData *job_data, InputData *input_data, SharedData *shared_data, Config *config);
 #endif //CLUSTERING_SDP_BRANCH_AND_BOUND_H

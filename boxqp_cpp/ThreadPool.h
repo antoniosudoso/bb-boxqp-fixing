@@ -12,6 +12,7 @@ private:
     InputData *input_data;
     SharedData  *shared_data;
     Config *config;
+    MatlabStruct **matlab;
 
     // We store the threads in a vector, so we can later stop them gracefully
     std::vector<std::thread> threads;
@@ -25,7 +26,7 @@ private:
 
 public:
 
-    ThreadPool(Config *config, SharedData *shared_data, InputData *input_data, int n_thread);
+    ThreadPool(MatlabStruct **matlab, Config *config, SharedData *shared_data, InputData *input_data, int n_thread);
     void quitPool();
     void addJob(JobData *job_data);
 

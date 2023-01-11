@@ -6,7 +6,7 @@
 #include "config_params.h"
 
 
-ThreadPool::ThreadPool(Config *config, SharedData *shared_data, InputData *input_data, int n_thread) {
+ThreadPool::ThreadPool(MatlabStruct **matlab, Config *config, SharedData *shared_data, InputData *input_data, int n_thread) {
 
     // This returns the number of threads supported by the system.
     // auto numberOfThreads = std::thread::hardware_concurrency();
@@ -15,6 +15,7 @@ ThreadPool::ThreadPool(Config *config, SharedData *shared_data, InputData *input
     this->config = config;
     this->shared_data = shared_data;
     this->input_data = input_data;
+    this->matlab = matlab;
 
     done = false;
 
@@ -79,7 +80,7 @@ void ThreadPool::doWork(int id) {
             job = shared_data->queue->pop();
         }
 
-        std::vector<JobData *> jobs = build_child_problem(job->type, job->node_data, input_data, shared_data, config);
+        std::vector<JobData *> jobs = build_child_problem(matlab[id], job->type, job->node_data, input_data, shared_data, config);
 
         delete (job);
 

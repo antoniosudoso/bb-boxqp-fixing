@@ -21,10 +21,10 @@ SDPNAL+ is called by using the [MATLAB Engine API](https://www.mathworks.com/hel
 
 Ubuntu and Debian instructions:
 
-1) Install CMake, OpenBLAS, LAPACK and Armadillo:
+1) Install CMake and Armadillo:
  ```
 sudo apt-get update
-sudo apt-get install cmake libopenblas-dev liblapack-dev libarmadillo-dev
+sudo apt-get install cmake libarmadillo-dev
 ```
 4) Open the makefile `boxqp_cpp/Makefile` 
 	- Set the variable `matlab_path` to the MATLAB installation folder.

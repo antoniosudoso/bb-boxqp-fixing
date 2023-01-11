@@ -6,7 +6,7 @@ objects = $(sources:.cpp=.o)
 all: bb
 
 bb: $(objects)
-	g++ -L $(matlab_path)/extern/bin/glnxa64/ -L $(gurobi_path)/lib/ -o $@ $^ -larmadillo -pthread -llapack -lopenblas -lMatlabDataArray -lMatlabEngine -Wl,-rpath,$(matlab_path)/extern/bin/glnxa64/
+	g++ -L $(matlab_path)/extern/bin/glnxa64/ -L $(gurobi_path)/lib/ -o $@ $^ -larmadillo -pthread -lMatlabDataArray -lMatlabEngine -Wl,-rpath,$(matlab_path)/extern/bin/glnxa64/
 
 %.o: %.cpp
 		g++ -g -Wall -O2 -o $@ -c $< -I $(matlab_path)/extern/include/
