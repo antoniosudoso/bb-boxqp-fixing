@@ -20,7 +20,7 @@ function result = call_solve_boxqp_root(Q, c, params)
 %   - cp_percineq: fraction of violated triangle inequalities to add
 %   - cp_activeineq: tolerance for finding active triangle inequalities
 
-    disp(params)
+    %disp(params)
     
     n = size(Q, 1);
     % local search with multistart
@@ -32,7 +32,7 @@ function result = call_solve_boxqp_root(Q, c, params)
         if fval < best_ub
             best_ub = fval;
             best_x_gub = x;
-            disp(best_ub)
+            %disp(best_ub)
         end
     end
     

@@ -25,6 +25,7 @@ function result = call_solve_boxqp_child(Q, c, xfix, xin, best_ub, best_x_gub, p
 %   - cp_activeineq: tolerance for finding active triangle inequalities
 
     %disp(xfix)
+    %disp(xin)
     
     if ~params.fixing
         

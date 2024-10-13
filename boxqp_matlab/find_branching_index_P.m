@@ -1,8 +1,9 @@
 function index = find_branching_index_P(P_set, xfix, Q, x, Xshr)
 
     original_n = size(Q, 1);
+    shr_n = size(Xshr, 1);
     
-    if ~isempty(xfix)
+    if (shr_n < original_n) && (~isempty(xfix))
         shr_idx = setdiff(1:original_n, xfix(:, 1)', 'stable');
         X = zeros(original_n, original_n);
         X(shr_idx, shr_idx) = Xshr;
@@ -16,7 +17,8 @@ function index = find_branching_index_P(P_set, xfix, Q, x, Xshr)
         i = P_set(k);
         sum = 0;
         for j=1:original_n
-            sum = sum + abs(Q(i, j)*(X(i, j)-x(i)*x(j)));
+            %sum = sum + abs(Q(i, j)*(X(i, j)-x(i)*x(j)));
+            sum = sum + Q(i, j)*(x(j)*x(i) - X(i, j));
         end
         values(k) = sum;
     end

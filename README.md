@@ -1,6 +1,6 @@
 ## Fix and Bound: An efficient approach for solving large-scale quadratic programming problems with box constraints
 
-This repository contains the source code of the B&B algorithm described in the paper ["Fix and Bound: An efficient approach for solving large-scale quadratic programming problems with box constraints"](https://arxiv.org/abs/2211.08911) for solving nonconvex BoxQPs to global optimality:
+This repository contains the source code of the B&B algorithm described in the paper ["Fix and Bound: An efficient approach for solving large-scale quadratic programming problems with box constraints"](https://arxiv.org/abs/2211.08911) for solving non-convex BoxQPs to global optimality:
 
 $$ 
 \begin{align*}
@@ -33,32 +33,32 @@ sudo apt-get install cmake libarmadillo-dev
 ```
 make
 ```
-This code has been tested on Ubuntu 20.04 LTS with MATLAB R2020b Update 7, SDPNAL+ 1.0, Gurobi 9.5.1 and SNOPT 7.7. To speed up the B&B search, we implemented a configurable pool of POSIX threads.
+This code has been tested on Ubuntu 20.04 LTS with MATLAB R2020b Update 7, SDPNAL+ 1.0, Gurobi 10.0.2 and SNOPT 7.7. To speed up the B&B search, the code features a configurable pool of POSIX threads.
 
 ## Configuration
 Various parameters used in the B&B algorithm can be modified via the configuration file `boxqp_cpp/config.txt`:
 
-- `BRANCH_AND_BOUND_TOL` - optimality tolerance of the algorithm
-- `BRANCH_AND_BOUND_PARALLEL` -  thread pool size: single thread (1), multi-thread (> 1)
-- `BRANCH_AND_BOUND_MAX_NODES` - maximum number of nodes
-- `BRANCH_AND_BOUND_VISITING_STRATEGY` - best first (0),  depth first (1), breadth first (2)
-- `BRANCH_AND_BOUND_FIXING` - do not fix variables (0),  fix variables to 0 or 1 (1)
-- `BRANCH_AND_BOUND_FIXING_TOL` - tolerance for fixing variables (only if fixing is enabled)
-- `MATLAB_SESSION_THREADS_ROOT` - number of threads for the MATLAB session at the root
-- `MATLAB_SESSION_THREADS_CHILD` - number of threads for the MATLAB session of children nodes
-- `MATLAB_SOURCE_FOLDER` - MATLAB folder containing source files of the algorithm
-- `SDP_SOLVER_TOL` - accuracy of SDPNAL+ in the relative KKT residual
-- `SDP_SOLVER_VERBOSE` - do not display SDP log (0), display SDP log (1)
+- `BRANCH_AND_BOUND_TOL` - Optimality gap tolerance
+- `BRANCH_AND_BOUND_PARALLEL` - Thread pool size: single thread (1); multi-thread (> 1)
+- `BRANCH_AND_BOUND_MAX_NODES` - Maximum number of nodes
+- `BRANCH_AND_BOUND_VISITING_STRATEGY` - Best first (0);  depth first (1); breadth first (2)
+- `BRANCH_AND_BOUND_FIXING` - Do not fix variables (0); try to fix variables (1)
+- `BRANCH_AND_BOUND_FIXING_TOL` - Tolerance for fixing variables (only if fixing is enabled)
+- `MATLAB_SESSION_THREADS_ROOT` - Number of threads for the MATLAB session at the root
+- `MATLAB_SESSION_THREADS_CHILD` - Number of threads for the MATLAB session of child nodes
+- `MATLAB_SOURCE_FOLDER` - Full path of the MATLAB folder containing source files (`boxqp_matlab`)
+- `SDP_SOLVER_TOL` - Accuracy tolerance of SDPNAL+ in the relative KKT residual
+- `SDP_SOLVER_VERBOSE` - Do not display SDP log (0), display SDP log (1)
 - `GUROBI_FOLDER` - Gurobi installation folder
 - `SNOPT_FOLDER` - SNOPT installation folder
 - `SNOPT_LICENSE` - SNOPT license file (.lic)
 - `SDPNAL_FOLDER` - SDPNAL+ installation folder
-- `CP_MAX_ITER` - maximum number of cutting-plane iterations
-- `CP_TOL` - tolerance between two consecutive cutting-plane iterations
-- `CP_MAX_INEQ` - maximum number of triangle inequalities to separate
-- `CP_PERC_INEQ` - fraction of the most violated triangle inequalities to add
-- `CP_EPS_INEQ` - tolerance for checking the violation of triangle inequalities
-- `CP_EPS_ACTIVE` - tolerance for detecting active  triangle inequalities
+- `CP_MAX_ITER` - Maximum number of cutting-plane iterations
+- `CP_TOL` - Tolerance between two consecutive cutting-plane iterations
+- `CP_MAX_INEQ` - Maximum number of triangle inequalities to separate
+- `CP_PERC_INEQ` - Fraction of the most violated triangle inequalities to add
+- `CP_EPS_INEQ` - Tolerance for checking the violation of triangle inequalities
+- `CP_EPS_ACTIVE` - Tolerance for detecting active triangle inequalities
 
 ## Usage
 ```
@@ -96,8 +96,7 @@ The log file reports the progress of the algorithm at the node level:
     - `-1` - maximum number of iterations
     -  `0` - node must be pruned
     -  `1` - less than $10n$ triangle inequalities
-    -  `2` - lower bound not significantly improved
-    -  `3` - lower bound not improved
+    -  `2 - 3` - lower bound not significantly improved
 - `CP_INEQ` - number of inequalities added in the last cutting-plane iteration
 - `SDP_FIX` - number of SDPs solved for fixing variables
 - `TIME_FIX` - time spent in seconds for fixing variables

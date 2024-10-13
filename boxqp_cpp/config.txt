@@ -1,0 +1,44 @@
+BRANCH_AND_BOUND_TOL = 1e-4
+# single thread (1), multi-thread (> 1 number of threads)
+BRANCH_AND_BOUND_PARALLEL = 2
+BRANCH_AND_BOUND_MAX_NODES = 10000
+# best first (0),  depth first (1), breadth first (2)
+BRANCH_AND_BOUND_VISITING_STRATEGY = 0
+# do not fix variables (0), fix variables (1)
+BRANCH_AND_BOUND_FIXING = 1
+# initial tolerance for fixing variables (only if fixing is enabled)
+BRANCH_AND_BOUND_FIXING_TOL = 0.01
+
+# number of threads for the matlab session root node
+MATLAB_SESSION_THREADS_ROOT = 4
+# number of threads for the matlab session children nodes
+MATLAB_SESSION_THREADS_CHILD = 2
+# matlab folder of the branch-and-bound algorithm
+MATLAB_SOURCE_FOLDER = /home/MPC/bb_boxqp_mvf/boxqp_matlab/
+
+# precision of SDPNAL+
+SDP_SOLVER_TOL = 1e-4
+# do not display log (0), display log (1)
+SDP_SOLVER_VERBOSE = 0
+
+# gurobi solver path
+GUROBI_FOLDER = /home/MPC/gurobi1002/
+# snopt solver path
+SNOPT_FOLDER = /home/MPC/bb_boxqp_mvf/software/snopt7_matlab/
+# snopt license file
+SNOPT_LICENSE = /home/MPC/bb_boxqp_mvf/software/snopt7.lic
+# sdpnal+ solver path
+SDPNAL_FOLDER = /home/MPC/bb_boxqp_mvf/software/SDPNAL+/
+
+# max cutting-plane iterations
+CP_MAX_ITER = 10
+# cutting plane tolerance
+CP_TOL = 1e-4
+# max number of inequalities to separate
+CP_MAX_INEQ = 100000
+# fraction of the most violated inequalities to add
+CP_PERC_INEQ = 0.10
+# tolerance for checking the violation
+CP_EPS_INEQ = 1e-4
+# tolerance for finding active inequalities
+CP_EPS_ACTIVE = 1e-3
